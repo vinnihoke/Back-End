@@ -158,13 +158,18 @@ router.delete("/users/:userId/comments/:commentId", async (req, res, next) => {
 // @route   Delete /users/:id/comments
 // @access  Private
 router.delete("/users/:id/comments", async (req, res, next) => {
-  const deleteUserFavorites = await db
-    .select("*")
-    .from("user_favorite")
-    .where("umb_user_id", "=", req.params.id)
-    .del();
-  return res.status(200).json({ success: true, desc: "This is from /comments" });
-});
+  const deleteOneUserFavoriteComment = await db
+      .select("*")
+      .from("user_favorite")
+      .where("umb_user_id", "=", req.params.userId)
+      .andWhere("comment_id", "=", req.params.commentId)
+      .del()
+      .select("*")
+      .from("comment")
+      .join("user_favorite", "user_favorite.comment_id", "comment.id")
+      .where("user_favorite.umb_user_id", "=", req.params.userId);
+    return res.status(200).json({ success: true, message: deleteOneUserFavoriteComment });
+  }
 
 /************************************************/
 /*              Comment Routes                  */
