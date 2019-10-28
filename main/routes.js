@@ -150,8 +150,12 @@ router.delete("/users/:userId/comments/:commentId", async (req, res, next) => {
     .from("user_favorite")
     .where("umb_user_id", "=", req.params.userId)
     .andWhere("comment_id", "=", req.params.commentId)
-    .del();
-  return res.status(200).json({data: getAllUserFavoriteComments, desc: "This is from /:commentID"});
+    .del()
+    .select("*")
+    .from("comment")
+    .join("user_favorite", "user_favorite.comment_id", "comment.id")
+    .where("user_favorite.umb_user_id", "=", req.params.userId);
+  return res.status(200).json({ success: true, message: deleteOneUserFavoriteComment });
 });
 
 // @desc    Delete all favorite comments of one user
@@ -164,11 +168,7 @@ router.delete("/users/:id/comments", async (req, res, next) => {
       .where("umb_user_id", "=", req.params.userId)
       .andWhere("comment_id", "=", req.params.commentId)
       .del()
-      .select("*")
-      .from("comment")
-      .join("user_favorite", "user_favorite.comment_id", "comment.id")
-      .where("user_favorite.umb_user_id", "=", req.params.userId);
-    return res.status(200).json({ success: true, message: deleteOneUserFavoriteComment });
+  return res.status(200).json({ success: true, desc: "This is from /:commentID in userCommentRoutes.js" })
   });
 
 /************************************************/
