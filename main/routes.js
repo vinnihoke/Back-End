@@ -169,7 +169,7 @@ router.delete("/users/:id/comments", async (req, res, next) => {
       .join("user_favorite", "user_favorite.comment_id", "comment.id")
       .where("user_favorite.umb_user_id", "=", req.params.userId);
     return res.status(200).json({ success: true, message: deleteOneUserFavoriteComment });
-  }
+  });
 
 /************************************************/
 /*              Comment Routes                  */
