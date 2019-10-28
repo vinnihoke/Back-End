@@ -151,7 +151,7 @@ router.delete("/users/:userId/comments/:commentId", async (req, res, next) => {
     .where("umb_user_id", "=", req.params.userId)
     .andWhere("comment_id", "=", req.params.commentId)
     .del();
-  return res.status(200).json(getAllUserFavoriteComments);
+  return res.status(200).json({ success: true, data: getAllUserFavoriteComments });
 });
 
 // @desc    Delete all favorite comments of one user
