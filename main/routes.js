@@ -151,16 +151,7 @@ router.delete("/users/:userId/comments/:commentId", async (req, res, next) => {
       .where("umb_user_id", "=", req.params.userId)
       .andWhere("comment_id", "=", req.params.commentId)
       .del();
-    const getAllUserFavoriteComments = await db
-      .select("*")
-      .from("comment")
-      .join("user_favorite", "user_favorite.comment_id", "comment.id")
-      .where("user_favorite.umb_user_id", "=", req.params.id);
-    const result = deleteOneUserFavoriteComment().then(
-      getAllUserFavoriteComments
-    );
-    return res.status(200).json({ success: true, message: result });
-  }
+    return res.status(200).json({ success: true, desc: "This is from /:commentID in userCommentRoutes.js" })
 });
 
 // @desc    Delete all favorite comments of one user
