@@ -145,17 +145,22 @@ router.get("/users/:userId/comments/:commentId", async (req, res, next) => {
 // @access  Private
 // VH — Needed to add a response from the delete request other than true.
 router.delete("/users/:userId/comments/:commentId", async (req, res, next) => {
-  const deleteOneUserFavoriteComment = await db
-    .select("*")
-    .from("user_favorite")
-    .where("umb_user_id", "=", req.params.userId)
-    .andWhere("comment_id", "=", req.params.commentId)
-    .del()
-    .select("*")
-    .from("comment")
-    .join("user_favorite", "user_favorite.comment_id", "comment.id")
-    .where("user_favorite.umb_user_id", "=", req.params.userId);
-  return res.status(200).json({ success: true, message: deleteOneUserFavoriteComment });
+   const deleteOneUserFavoriteComment = await db
+      .select("*")
+      .from("user_favorite")
+      .where("umb_user_id", "=", req.params.userId)
+      .andWhere("comment_id", "=", req.params.commentId)
+      .del();
+    const getAllUserFavoriteComments = await db
+      .select("*")
+      .from("comment")
+      .join("user_favorite", "user_favorite.comment_id", "comment.id")
+      .where("user_favorite.umb_user_id", "=", req.params.id);
+    const result = deleteOneUserFavoriteComment().then(
+      getAllUserFavoriteComments
+    );
+    return res.status(200).json({ success: true, message: result });
+  }
 });
 
 // @desc    Delete all favorite comments of one user
